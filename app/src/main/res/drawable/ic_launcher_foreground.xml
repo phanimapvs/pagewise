@@ -1,0 +1,9 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <!-- open book -->
+    <path android:fillColor="#FFFBF6EE"
+        android:pathData="M54,40C47,35 38,34 30,35V72C38,71 47,72 54,77C61,72 70,71 78,72V35C70,34 61,35 54,40Z" />
+    <path android:fillColor="#FFE0703A" android:pathData="M53,41h2v35h-2z" />
+    <!-- bookmark ribbon -->
+    <path android:fillColor="#FFE0703A" android:pathData="M66,35h6v16l-3,-3l-3,3z" />
+</vector>
