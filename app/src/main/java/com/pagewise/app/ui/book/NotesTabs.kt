@@ -53,6 +53,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.pagewise.app.ui.theme.DisplayFont
 import com.pagewise.app.data.db.Book
 import com.pagewise.app.data.db.Quote
 import com.pagewise.app.data.db.Thought
@@ -89,7 +90,7 @@ fun QuotesTab(book: Book) {
                     q.imagePath?.let { path ->
                         AsyncImage(File(path), null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxWidth().height(160.dp).clip(RoundedCornerShape(8.dp)))
                     }
-                    if (q.text.isNotBlank()) Text("“${q.text}”", fontFamily = FontFamily.Serif, fontStyle = FontStyle.Italic, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(top = 6.dp))
+                    if (q.text.isNotBlank()) Text("“${q.text}”", fontFamily = DisplayFont, fontStyle = FontStyle.Italic, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(top = 6.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(q.page?.let { "p. $it" } ?: "", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
                         IconButton(onClick = { shareQuote(context, book, q) }) { Icon(Icons.Filled.Share, "Share") }
@@ -229,7 +230,7 @@ fun WordsTab(book: Book) {
             Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)) {
                 Row(Modifier.padding(14.dp), verticalAlignment = Alignment.Top) {
                     Column(Modifier.weight(1f)) {
-                        Text(w.word, style = MaterialTheme.typography.titleMedium, fontFamily = FontFamily.Serif)
+                        Text(w.word, style = MaterialTheme.typography.titleMedium, fontFamily = DisplayFont)
                         Text(w.definition, style = MaterialTheme.typography.bodyMedium)
                         w.page?.let { Text("p. $it", style = MaterialTheme.typography.labelSmall) }
                     }

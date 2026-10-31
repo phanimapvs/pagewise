@@ -16,7 +16,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pagewise.app.data.ThemeMode
 import com.pagewise.app.data.UserPrefs
 import com.pagewise.app.ui.AppRoot
+import com.pagewise.app.ui.components.Critter
+import com.pagewise.app.ui.components.LocalCritter
 import com.pagewise.app.ui.components.LocalRepo
+import com.pagewise.app.ui.theme.AppFont
+import com.pagewise.app.ui.theme.Palette
 import com.pagewise.app.ui.theme.PagewiseTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,8 +42,8 @@ class MainActivity : ComponentActivity() {
                 enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
                 onDispose {}
             }
-            CompositionLocalProvider(LocalRepo provides repo) {
-                PagewiseTheme(p.theme) {
+            CompositionLocalProvider(LocalRepo provides repo, LocalCritter provides Critter.of(p.critter)) {
+                PagewiseTheme(p.theme, Palette.of(p.palette), AppFont.of(p.font)) {
                     Surface(color = MaterialTheme.colorScheme.background) { AppRoot(p) }
                 }
             }

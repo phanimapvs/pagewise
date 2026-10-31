@@ -28,6 +28,12 @@ data class UserPrefs(
     val unlockedOutfits: Set<String> = setOf("classic"),
     val activeOutfit: String = "classic",
     val theme: ThemeMode = ThemeMode.SYSTEM,
+    /** Color theme id, see ui.theme.Palette. */
+    val palette: String = "ember",
+    /** Font id, see ui.theme.AppFont. */
+    val font: String = "classic",
+    /** Companion animal id, see ui.components.Critter. */
+    val critter: String = "fox",
     val defaultSound: String? = null,
     val lastBackupAt: Long = 0,
     /** One-off events that achievements check, e.g. "ambient", "infographic". */
@@ -44,6 +50,9 @@ class Prefs(private val context: Context) {
         val unlocked = stringSetPreferencesKey("unlocked_outfits")
         val outfit = stringPreferencesKey("active_outfit")
         val theme = stringPreferencesKey("theme")
+        val palette = stringPreferencesKey("palette")
+        val font = stringPreferencesKey("font")
+        val critter = stringPreferencesKey("critter")
         val sound = stringPreferencesKey("default_sound")
         val lastBackup = stringPreferencesKey("last_backup")
         val flags = stringSetPreferencesKey("flags")
@@ -62,6 +71,9 @@ class Prefs(private val context: Context) {
         unlockedOutfits = this[K.unlocked] ?: setOf("classic"),
         activeOutfit = this[K.outfit] ?: "classic",
         theme = this[K.theme]?.let { runCatching { ThemeMode.valueOf(it) }.getOrNull() } ?: ThemeMode.SYSTEM,
+        palette = this[K.palette] ?: "ember",
+        font = this[K.font] ?: "classic",
+        critter = this[K.critter] ?: "fox",
         defaultSound = this[K.sound],
         lastBackupAt = this[K.lastBackup]?.toLongOrNull() ?: 0,
         flags = this[K.flags] ?: emptySet(),
@@ -74,6 +86,9 @@ class Prefs(private val context: Context) {
         it[K.reminderMinute] = minute
     }
     suspend fun setTheme(t: ThemeMode) = context.dataStore.edit { it[K.theme] = t.name }
+    suspend fun setPalette(id: String) = context.dataStore.edit { it[K.palette] = id }
+    suspend fun setFont(id: String) = context.dataStore.edit { it[K.font] = id }
+    suspend fun setCritter(id: String) = context.dataStore.edit { it[K.critter] = id }
     suspend fun setDefaultSound(id: String?) = context.dataStore.edit {
         if (id == null) it.remove(K.sound) else it[K.sound] = id
     }
@@ -111,6 +126,9 @@ class Prefs(private val context: Context) {
         it[K.unlocked] = p.unlockedOutfits
         it[K.outfit] = p.activeOutfit
         it[K.theme] = p.theme.name
+        it[K.palette] = p.palette
+        it[K.font] = p.font
+        it[K.critter] = p.critter
         p.defaultSound?.let { s -> it[K.sound] = s }
         it[K.flags] = p.flags
     }

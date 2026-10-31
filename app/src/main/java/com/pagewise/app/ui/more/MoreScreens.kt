@@ -56,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.pagewise.app.ui.theme.DisplayFont
 import com.pagewise.app.data.UserPrefs
 import com.pagewise.app.domain.AchievementInput
 import com.pagewise.app.domain.AchievementTier
@@ -172,6 +173,9 @@ fun StoreScreen(nav: NavController, prefs: UserPrefs) {
                             "${com.pagewise.app.domain.Ink.BOOK_FINISHED_BONUS} for each finished book, and more from achievements.",
                         style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center,
                     )
+                    Text("Your companion", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
+                    CompanionPicker(prefs)
+                    Text("Outfits", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
                 }
             }
             items(Outfit.entries) { o ->
@@ -239,7 +243,7 @@ fun NotesScreen(nav: NavController) {
                 items(rows) { (bookId, text, page) ->
                     Card(onClick = { nav.navigate(Routes.book(bookId)) }, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)) {
                         Column(Modifier.padding(14.dp)) {
-                            Text(text, fontFamily = if (tab == 0) FontFamily.Serif else null, fontStyle = if (tab == 0) FontStyle.Italic else null)
+                            Text(text, fontFamily = if (tab == 0) DisplayFont else null, fontStyle = if (tab == 0) FontStyle.Italic else null)
                             Text(listOfNotNull(titles[bookId], page?.let { "p. $it" }).joinToString(" · "), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                         }
                     }

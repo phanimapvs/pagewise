@@ -1,6 +1,18 @@
 package com.pagewise.app.ui
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -97,12 +109,33 @@ private val tabs = listOf(
     Tab(Routes.MORE, "More", Icons.Filled.MoreHoriz),
 )
 
+private val tabRoutes = tabs.map { it.route }.toSet()
+
+/** Space between the status bar (or camera cutout) and the top of every screen. */
+private val TopBreathingRoom = 10.dp
+
+/**
+ * Keeps every screen below the status bar and any display cutout, plus a little air.
+ * The insets are consumed here, so top bars, scaffolds and inset paddings inside
+ * don't add them a second time. Bottom insets are left to the navigation bar and screens.
+ */
 @Composable
-fun AppRoot(prefs: UserPrefs) {
-    if (!prefs.onboarded) {
-        OnboardingScreen()
-        return
-    }
+private fun SafeTopArea(content: @Composable () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))
+            .padding(top = TopBreathingRoom),
+    ) { content() }
+}
+
+@Composable
+fun AppRoot(prefs: UserPrefs) = SafeTopArea {
+    if (prefs.onboarded) MainScreens(prefs) else OnboardingScreen()
+}
+
+@Composable
+private fun MainScreens(prefs: UserPrefs) {
     val nav = rememberNavController()
     val repo = LocalRepo.current
     val outfit = Outfit.of(prefs.activeOutfit)
@@ -133,7 +166,20 @@ fun AppRoot(prefs: UserPrefs) {
             }
         },
     ) { pad ->
-        NavHost(nav, Routes.HOME, Modifier.padding(bottom = pad.calculateBottomPadding()).consumeWindowInsets(pad)) {
+        NavHost(
+            nav, Routes.HOME, Modifier.padding(bottom = pad.calculateBottomPadding()).consumeWindowInsets(pad),
+            // Minimal motion: tabs cross-fade; deeper screens fade in with a small rise.
+            enterTransition = {
+                if (targetState.destination.route in tabRoutes) fadeIn(tween(160))
+                else fadeIn(tween(200)) + slideInVertically(tween(240)) { it / 32 }
+            },
+            exitTransition = { fadeOut(tween(120)) },
+            popEnterTransition = { fadeIn(tween(160)) },
+            popExitTransition = {
+                if (initialState.destination.route in tabRoutes) fadeOut(tween(120))
+                else fadeOut(tween(160)) + slideOutVertically(tween(200)) { it / 32 }
+            },
+        ) {
             composable(Routes.HOME) { HomeScreen(nav, prefs) }
             composable(Routes.LIBRARY) { LibraryScreen(nav) }
             composable(Routes.GOALS) { GoalsScreen(prefs) }

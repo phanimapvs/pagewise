@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -111,11 +110,7 @@ fun SettingsScreen(nav: NavController, prefs: UserPrefs) {
             )
 
             Section("Appearance")
-            androidx.compose.foundation.layout.FlowRow(Modifier.padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ThemeMode.entries.forEach { t ->
-                    FilterChip(prefs.theme == t, { scope.launch { repo.prefs.setTheme(t) } }, label = { Text(t.label) })
-                }
-            }
+            AppearanceSettings(prefs)
 
             Section("Backup")
             Text(
@@ -131,7 +126,8 @@ fun SettingsScreen(nav: NavController, prefs: UserPrefs) {
 
             Section("About")
             Text(
-                "Pagewise 1.0 · A reading tracker. Book data from Google Books and Open Library, definitions from the Free Dictionary API.",
+                "Pagewise 2.0 · A reading tracker. Book data from Google Books and Open Library, definitions from the Free Dictionary API. " +
+                    "Fonts Literata, Lora, Playfair Display, Nunito and Atkinson Hyperlegible are used under the SIL Open Font License 1.1.",
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(16.dp),
             )
@@ -183,7 +179,7 @@ fun OnboardingScreen() {
         scope.launch { finishOnboarding(repo, context, name, minutes, granted) }
     }
 
-    Column(Modifier.fillMaxSize().statusBarsPadding().imePadding().navigationBarsPadding().padding(24.dp)) {
+    Column(Modifier.fillMaxSize().imePadding().navigationBarsPadding().padding(24.dp)) {
         HorizontalPager(pager, Modifier.weight(1f), userScrollEnabled = false) { page ->
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 when (page) {

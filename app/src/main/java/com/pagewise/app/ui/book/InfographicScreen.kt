@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.pagewise.app.ui.theme.DisplayFont
 import com.pagewise.app.data.db.RatingAspect
 import com.pagewise.app.domain.Stats
 import com.pagewise.app.domain.formatDuration
@@ -97,7 +98,7 @@ fun InfographicScreen(nav: NavController, bookId: Long) {
                 Spacer(Modifier.height(12.dp))
                 BookCover(b, width = 120.dp)
                 Spacer(Modifier.height(12.dp))
-                Text(b.title, color = Color.White, fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold, fontSize = 22.sp, textAlign = TextAlign.Center)
+                Text(b.title, color = Color.White, fontFamily = DisplayFont, fontWeight = FontWeight.Bold, fontSize = 22.sp, textAlign = TextAlign.Center)
                 if (b.authors.isNotBlank()) Text(b.authors, color = Color.White.copy(alpha = 0.7f), textAlign = TextAlign.Center)
                 stars?.let { StarRating(it, null, Modifier.padding(top = 8.dp), size = 22.dp) }
                 Spacer(Modifier.height(18.dp))
@@ -115,7 +116,7 @@ fun InfographicScreen(nav: NavController, bookId: Long) {
                 quote?.let {
                     Spacer(Modifier.height(18.dp))
                     Text(
-                        "“${it.text}”", color = Color.White.copy(alpha = 0.9f), fontFamily = FontFamily.Serif, fontStyle = FontStyle.Italic,
+                        "“${it.text}”", color = Color.White.copy(alpha = 0.9f), fontFamily = DisplayFont, fontStyle = FontStyle.Italic,
                         textAlign = TextAlign.Center, maxLines = 5, overflow = TextOverflow.Ellipsis,
                     )
                 }
@@ -145,7 +146,7 @@ fun InfographicScreen(nav: NavController, bookId: Long) {
 @Composable
 private fun Big(value: String, label: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, color = Color.White, fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold, fontSize = 22.sp)
+        Text(value, color = Color.White, fontFamily = DisplayFont, fontWeight = FontWeight.Bold, fontSize = 22.sp)
         Text(label, color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.labelSmall)
     }
 }

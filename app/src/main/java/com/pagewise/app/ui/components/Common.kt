@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
+import com.pagewise.app.ui.theme.DisplayFont
 import com.pagewise.app.data.Repository
 import com.pagewise.app.data.db.Book
 import com.pagewise.app.ui.theme.StatNumber
@@ -112,7 +113,7 @@ private fun GeneratedCover(title: String, authors: String, modifier: Modifier) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                title, color = Color.White, fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold,
+                title, color = Color.White, fontFamily = DisplayFont, fontWeight = FontWeight.Bold,
                 fontSize = 11.sp, lineHeight = 13.sp, textAlign = TextAlign.Center, maxLines = 4, overflow = TextOverflow.Ellipsis,
             )
             if (authors.isNotBlank()) Text(

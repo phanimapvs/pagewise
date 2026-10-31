@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.pagewise.app.ui.theme.DisplayFont
 import com.pagewise.app.data.UserPrefs
 import com.pagewise.app.service.AmbientSound
 import com.pagewise.app.service.ReadingTimer
@@ -152,7 +153,7 @@ private fun TimerDial(s: TimerState, outfit: Outfit) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Pip(outfit, 72.dp, animate = !s.paused)
-            Text(clock(elapsed), fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold, fontSize = 40.sp)
+            Text(clock(elapsed), fontFamily = DisplayFont, fontWeight = FontWeight.Bold, fontSize = 40.sp)
             if (limit != null) Text("of ${limit / 60000} min", style = MaterialTheme.typography.labelMedium)
             Text("+${com.pagewise.app.domain.Ink.forSession(elapsed / 1000)} ink", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }
