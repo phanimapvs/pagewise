@@ -60,15 +60,6 @@
 ./gradlew assembleRelease
 ```
 
-> **Signing.** Release builds are signed with the app's release keystore when a `keystore.properties` file exists at the project root; without it (a fresh clone or CI) the build falls back to the debug key so it still compiles. The keystore and `keystore.properties` contain secrets and are **git-ignored** — never committed. To produce a signed release, create `keystore.properties` at the project root:
->
-> ```properties
-> storeFile=keystore/pagewise-release.jks
-> storePassword=your-store-password
-> keyAlias=pagewise
-> keyPassword=your-key-password
-> ```
-
 ## 🚀 Releases
 
 Prebuilt APKs are available on the [Releases page](https://github.com/phanimapvs/pagewise/releases):
