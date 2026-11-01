@@ -27,10 +27,10 @@
   &nbsp;
   <img src="assets/screenshots/06_book.png" width="30%" alt="Book detail with per-book stats">
   &nbsp;
-  <img src="assets/screenshots/07_settings.png" width="30%" alt="Settings — theme modes, color themes and reading fonts">
+  <img src="assets/screenshots/05_more.png" width="30%" alt="More — reading report, achievements, readathons, shop, settings">
 </p>
 <p align="center">
-  <sub>🏠 Home&nbsp;·&nbsp;📖 Book detail&nbsp;·&nbsp;⚙️ Settings</sub>
+  <sub>🏠 Home&nbsp;·&nbsp;📖 Book detail&nbsp;·&nbsp;⋯ More</sub>
 </p>
 
 ---
