@@ -2,7 +2,7 @@
   <img src="assets/banner.png?v=2" alt="Pagewise — your reading, page by page" width="100%">
 </p>
 
-<h1 align="center">📖 Pagewise</h1>
+<h1 align="center"> Pagewise</h1>
 
 <p align="center">
   An Android reading tracker built with <b>Kotlin</b> and <b>Jetpack Compose</b>.<br>
