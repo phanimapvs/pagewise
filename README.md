@@ -66,7 +66,8 @@ Prebuilt APKs are available on the [Releases page](https://github.com/phanimapvs
 
 | Version | Download |
 |---------|----------|
-| 🆕 [v2.01](https://github.com/phanimapvs/pagewise/releases/tag/v2.01) *(latest)* | `Pagewise-2.01.apk` |
+| 🆕 [v2.02](https://github.com/phanimapvs/pagewise/releases/tag/v2.02) *(latest)* | `Pagewise-2.02.apk` |
+| 📦 [v2.01](https://github.com/phanimapvs/pagewise/releases/tag/v2.01) | `Pagewise-2.01.apk` |
 | 📦 [v2.0](https://github.com/phanimapvs/pagewise/releases/tag/v2.0) | `Pagewise-2.0.apk` |
 | 📦 [v1.0](https://github.com/phanimapvs/pagewise/releases/tag/v1.0) | `Pagewise-1.0.apk` |
 

@@ -25,8 +25,8 @@ android {
         applicationId = "com.pagewise.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 3
-        versionName = "2.01"
+        versionCode = 4
+        versionName = "2.02"
     }
 
     signingConfigs {
