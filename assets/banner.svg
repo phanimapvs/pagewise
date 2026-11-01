@@ -13,6 +13,10 @@
       <stop offset="0" stop-color="#e9b872"/>
       <stop offset="1" stop-color="#d99a4e"/>
     </linearGradient>
+    <linearGradient id="iconbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1D344A"/>
+      <stop offset="1" stop-color="#0E1D2B"/>
+    </linearGradient>
     <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.35"/>
     </filter>
@@ -29,29 +33,31 @@
     <line x1="60" y1="270" x2="1220" y2="270"/>
   </g>
 
-  <!-- open book glyph -->
-  <g filter="url(#soft)" transform="translate(120,110)">
-    <!-- left page -->
-    <path d="M150 20 C110 2 55 2 12 18 L12 150 C55 134 110 134 150 152 Z" fill="url(#page)"/>
-    <!-- right page -->
-    <path d="M150 20 C190 2 245 2 288 18 L288 150 C245 134 190 134 150 152 Z" fill="url(#page)"/>
-    <!-- spine -->
-    <rect x="146" y="18" width="8" height="134" rx="3" fill="url(#accent)"/>
-    <!-- text lines on pages -->
-    <g stroke="#b9a274" stroke-width="4" stroke-linecap="round" opacity="0.8">
-      <line x1="40" y1="46" x2="128" y2="46"/>
-      <line x1="40" y1="68" x2="128" y2="68"/>
-      <line x1="40" y1="90" x2="118" y2="90"/>
-      <line x1="172" y1="46" x2="260" y2="46"/>
-      <line x1="172" y1="68" x2="260" y2="68"/>
-      <line x1="172" y1="90" x2="250" y2="90"/>
+  <!-- Night Shelf app icon -->
+  <g filter="url(#soft)" transform="translate(110,90)">
+    <rect width="180" height="180" rx="42" fill="url(#iconbg)"/>
+    <rect width="180" height="180" rx="42" fill="none" stroke="#ffffff" stroke-opacity="0.10" stroke-width="2"/>
+    <g transform="translate(-84.6,-84.6) scale(0.332)">
+      <!-- Ember spine -->
+      <path fill="#F0A15B" d="M320,300 h72 a20,20 0 0 1 20,20 v390 a20,20 0 0 1 -20,20 h-72 a20,20 0 0 1 -20,-20 v-390 a20,20 0 0 1 20,-20 z"/>
+      <!-- Forest spine -->
+      <path fill="#36AB7D" d="M450,330 h72 a20,20 0 0 1 20,20 v360 a20,20 0 0 1 -20,20 h-72 a20,20 0 0 1 -20,-20 v-360 a20,20 0 0 1 20,-20 z"/>
+      <!-- Ocean spine, leaning -->
+      <g transform="rotate(14 640 540)">
+        <path fill="#54A0D6" d="M604,300 h72 a20,20 0 0 1 20,20 v390 a20,20 0 0 1 -20,20 h-72 a20,20 0 0 1 -20,-20 v-390 a20,20 0 0 1 20,-20 z"/>
+      </g>
+      <!-- spine detail lines -->
+      <g stroke="#0E1D2B" stroke-width="7" stroke-linecap="round" opacity="0.55">
+        <line x1="324" y1="350" x2="388" y2="350"/>
+        <line x1="454" y1="380" x2="518" y2="380"/>
+      </g>
+      <!-- shelf bar -->
+      <path fill="#ffffff" fill-opacity="0.22" d="M283,726 h444 a13,13 0 0 1 13,13 a13,13 0 0 1 -13,13 h-444 a13,13 0 0 1 -13,-13 a13,13 0 0 1 13,-13 z"/>
     </g>
-    <!-- bookmark -->
-    <path d="M150 0 L150 60 L138 48 L126 60 L126 6 Z" fill="#d6604d"/>
   </g>
 
   <!-- wordmark -->
-  <g transform="translate(470,0)">
+  <g transform="translate(350,0)">
     <text x="0" y="175" font-family="Georgia, 'Times New Roman', serif" font-size="96" font-weight="700" fill="#fdf6e9">Pagewise</text>
     <text x="4" y="225" font-family="Verdana, Geneva, sans-serif" font-size="30" fill="#e9b872" letter-spacing="2">Your reading, page by page</text>
     <!-- chips -->
