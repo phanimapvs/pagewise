@@ -1,21 +1,12 @@
 <p align="center">
-  <img src="assets/banner.png?v=2" alt="Pagewise — your reading, page by page" width="100%">
+  <img src="assets/banner.png?v=3" alt="Pagewise — an Android reading tracker built with Kotlin and Jetpack Compose" width="100%">
 </p>
 
-<h1 align="center"> Pagewise</h1>
+<h1 align="center">Pagewise</h1>
 
 <p align="center">
   An Android reading tracker built with <b>Kotlin</b> and <b>Jetpack Compose</b>.<br>
   Track your books, time your reading sessions, hit your goals, and keep notes — all in a clean Material 3 interface. ✨
-</p>
-
-<p align="center">
-  <img alt="Latest release" src="https://img.shields.io/github/v/release/phanimapvs/pagewise?color=d99a4e&label=release&logo=github">
-  <img alt="Platform" src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white">
-  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-7F52FF?logo=kotlin&logoColor=white">
-  <img alt="Jetpack Compose" src="https://img.shields.io/badge/Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white">
-  <img alt="Material 3" src="https://img.shields.io/badge/Material%203-6750A4?logo=materialdesign&logoColor=white">
-  <img alt="minSdk 26" src="https://img.shields.io/badge/minSdk-26-orange">
 </p>
 
 ---
