@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="1024" android:viewportHeight="1024">
+    <!-- Themed (monochrome) icon: clean silhouette of the shelf, system applies the tint -->
+
+    <path android:fillColor="#FF000000"
+        android:pathData="M320,300 h72 a20,20 0 0 1 20,20 v390 a20,20 0 0 1 -20,20 h-72 a20,20 0 0 1 -20,-20 v-390 a20,20 0 0 1 20,-20 z" />
+    <path android:fillColor="#FF000000"
+        android:pathData="M450,330 h72 a20,20 0 0 1 20,20 v360 a20,20 0 0 1 -20,20 h-72 a20,20 0 0 1 -20,-20 v-360 a20,20 0 0 1 20,-20 z" />
+    <group android:rotation="14" android:pivotX="640" android:pivotY="540">
+        <path android:fillColor="#FF000000"
+            android:pathData="M604,300 h72 a20,20 0 0 1 20,20 v390 a20,20 0 0 1 -20,20 h-72 a20,20 0 0 1 -20,-20 v-390 a20,20 0 0 1 20,-20 z" />
+    </group>
+    <path android:fillColor="#FF000000"
+        android:pathData="M283,726 h444 a13,13 0 0 1 13,13 a13,13 0 0 1 -13,13 h-444 a13,13 0 0 1 -13,-13 a13,13 0 0 1 13,-13 z" />
+</vector>
