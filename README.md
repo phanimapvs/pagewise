@@ -37,6 +37,7 @@
 - 🤖 **Reading assistant** — in-app helper including word definitions lookup.
 - 🎨 **Personalization** — light/dark themes 🌙, appearance settings, and a selection of reading fonts (Atkinson Hyperlegible, Literata, Lora, Nunito, Playfair).
 - 🔔 **Reminders** — reading notifications.
+- 💾 **Automatic backups** — daily or weekly backups (with quote photos) kept on the phone, optionally copied to a folder you choose, plus Android cloud backup so a new phone can restore your books.
 
 ## 🛠️ Tech stack
 
@@ -52,7 +53,7 @@
 
 - 📱 **minSdk:** 26 (Android 8.0)
 - 🎯 **targetSdk / compileSdk:** 36
-- 🔖 **Current version:** 2.0.0
+- 🔖 **Current version:** 2.03
 
 ## 🔨 Building
 
@@ -66,7 +67,8 @@ Prebuilt APKs are available on the [Releases page](https://github.com/phanimapvs
 
 | Version | Download |
 |---------|----------|
-| 🆕 [v2.02](https://github.com/phanimapvs/pagewise/releases/tag/v2.02) *(latest)* | `Pagewise-2.02.apk` |
+| 🆕 [v2.03](https://github.com/phanimapvs/pagewise/releases/tag/v2.03) *(latest)* | `Pagewise-2.03.apk` |
+| 📦 [v2.02](https://github.com/phanimapvs/pagewise/releases/tag/v2.02) | `Pagewise-2.02.apk` |
 | 📦 [v2.01](https://github.com/phanimapvs/pagewise/releases/tag/v2.01) | `Pagewise-2.01.apk` |
 | 📦 [v2.0](https://github.com/phanimapvs/pagewise/releases/tag/v2.0) | `Pagewise-2.0.apk` |
 | 📦 [v1.0](https://github.com/phanimapvs/pagewise/releases/tag/v1.0) | `Pagewise-1.0.apk` |

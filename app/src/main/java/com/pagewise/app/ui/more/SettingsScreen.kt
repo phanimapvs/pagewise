@@ -20,17 +20,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,19 +49,13 @@ import com.pagewise.app.data.db.GoalMetric
 import com.pagewise.app.data.db.GoalPeriod
 import com.pagewise.app.service.Reminders
 import com.pagewise.app.ui.components.BackTopBar
-import com.pagewise.app.ui.components.ConfirmDialog
 import com.pagewise.app.ui.components.LocalRepo
 import com.pagewise.app.ui.components.Outfit
 import com.pagewise.app.ui.components.Pip
 import com.pagewise.app.ui.components.TextInputDialog
 import com.pagewise.app.ui.goals.ReminderDialog
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
@@ -74,26 +65,8 @@ fun SettingsScreen(nav: NavController, prefs: UserPrefs) {
     val scope = rememberCoroutineScope()
     var editingName by remember { mutableStateOf(false) }
     var reminder by remember { mutableStateOf(false) }
-    var pendingImport by remember { mutableStateOf<String?>(null) }
-    var message by remember { mutableStateOf<String?>(null) }
 
-    val exporter = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
-        if (uri != null) scope.launch {
-            runCatching {
-                val json = repo.exportJson()
-                withContext(Dispatchers.IO) { context.contentResolver.openOutputStream(uri)?.use { it.write(json.toByteArray()) } }
-                repo.prefs.setLastBackup(System.currentTimeMillis())
-            }.onSuccess { message = "Backup saved." }.onFailure { message = "Couldn't save the backup: ${it.message}" }
-        }
-    }
-    val importer = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) scope.launch {
-            pendingImport = withContext(Dispatchers.IO) {
-                runCatching { context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } }.getOrNull()
-            }
-            if (pendingImport == null) message = "Couldn't read that file."
-        }
-    }
+    val appVersion = remember { context.packageManager.getPackageInfo(context.packageName, 0).versionName.orEmpty() }
 
     Scaffold(topBar = { BackTopBar("Settings", { nav.popBackStack() }) }) { pad ->
         Column(Modifier.padding(pad).verticalScroll(rememberScrollState())) {
@@ -113,20 +86,11 @@ fun SettingsScreen(nav: NavController, prefs: UserPrefs) {
             AppearanceSettings(prefs)
 
             Section("Backup")
-            Text(
-                "Your data lives on this phone. Save a backup file to Drive or anywhere else, and restore it on a new phone." +
-                    if (prefs.lastBackupAt > 0) "\nLast backup: ${Instant.ofEpochMilli(prefs.lastBackupAt).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm"))}" else "",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
-            Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = { exporter.launch("pagewise-backup-${LocalDate.now()}.json") }) { Text("Save backup") }
-                OutlinedButton(onClick = { importer.launch(arrayOf("application/json", "*/*")) }) { Text("Restore") }
-            }
+            BackupSettings(prefs)
 
             Section("About")
             Text(
-                "Pagewise 2.0 · A reading tracker. Book data from Google Books and Open Library, definitions from the Free Dictionary API. " +
+                "Pagewise $appVersion · A reading tracker. Book data from Google Books and Open Library, definitions from the Free Dictionary API. " +
                     "Fonts Literata, Lora, Playfair Display, Nunito and Atkinson Hyperlegible are used under the SIL Open Font License 1.1.",
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(16.dp),
@@ -139,25 +103,6 @@ fun SettingsScreen(nav: NavController, prefs: UserPrefs) {
         editingName = false
     }
     if (reminder) ReminderDialog(prefs) { reminder = false }
-    pendingImport?.let { text ->
-        ConfirmDialog(
-            "Restore backup?", "This replaces everything currently in the app with the backup's contents.",
-            confirm = "Restore", onDismiss = { pendingImport = null },
-        ) {
-            scope.launch {
-                runCatching { repo.importJson(text) }
-                    .onSuccess {
-                        val p = repo.prefs.current()
-                        Reminders.scheduleDaily(context, p.reminderEnabled, p.reminderMinute)
-                        message = "Backup restored."
-                    }
-                    .onFailure { message = "That file isn't a Pagewise backup." }
-            }
-        }
-    }
-    message?.let { m ->
-        AlertDialog(onDismissRequest = { message = null }, text = { Text(m) }, confirmButton = { TextButton(onClick = { message = null }) { Text("OK") } })
-    }
 }
 
 @Composable
@@ -193,6 +138,7 @@ fun OnboardingScreen() {
                         )
                         Spacer(Modifier.height(24.dp))
                         OutlinedTextField(name, { name = it }, label = { Text("What should I call you?") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                        WelcomeBackRestore(Modifier.padding(top = 16.dp))
                     }
                     1 -> {
                         Pip(Outfit.GLASSES, 140.dp, animate = true)

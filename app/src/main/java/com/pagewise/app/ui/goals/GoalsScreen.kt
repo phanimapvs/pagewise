@@ -106,7 +106,7 @@ fun GoalsScreen(prefs: UserPrefs) {
             item { SectionHeader("Daily") }
             item {
                 if (daily == null) {
-                    Card(onClick = { editing = newGoal(GoalPeriod.DAILY) }) {
+                    Card(onClick = { editing = newGoal(GoalPeriod.DAILY) }, modifier = Modifier.fillMaxWidth()) {
                         Text("Set a daily goal to build a reading habit →", Modifier.padding(16.dp))
                     }
                 } else {
@@ -177,7 +177,7 @@ private fun GoalProgress.title() = when (goal.period) {
 
 @Composable
 private fun GoalCard(p: GoalProgress, onEdit: (() -> Unit)?, onDelete: () -> Unit, onBuy: (() -> Unit)?) {
-    Card(colors = CardDefaults.cardColors(containerColor = if (p.done) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceContainer)) {
+    Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = if (p.done) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceContainer)) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             ProgressRing(p.fraction, Modifier.size(64.dp), stroke = 7.dp) {
                 Text("${(p.fraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge)

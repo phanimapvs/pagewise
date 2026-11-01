@@ -25,8 +25,8 @@ android {
         applicationId = "com.pagewise.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
-        versionName = "2.02"
+        versionCode = 5
+        versionName = "2.03"
     }
 
     signingConfigs {
@@ -95,6 +95,7 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.7")
     implementation("androidx.work:work-runtime-ktx:2.9.1")
+    implementation("androidx.documentfile:documentfile:1.0.1")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")

@@ -55,6 +55,7 @@ import com.pagewise.app.ui.components.LinearBar
 import com.pagewise.app.ui.components.LocalRepo
 import com.pagewise.app.ui.components.SectionHeader
 import com.pagewise.app.ui.components.StatTile
+import com.pagewise.app.ui.components.TileRow
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.YearMonth
@@ -87,19 +88,19 @@ fun StatsScreen(nav: NavController) {
                 }
             }
             item {
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                TileRow {
                     StatTile("Total time", formatDuration(o.totalSeconds), Modifier.weight(1f))
                     StatTile("Pages read", o.totalPages.toString(), Modifier.weight(1f))
                 }
             }
             item {
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                TileRow {
                     StatTile("Books finished", o.booksFinished.toString(), Modifier.weight(1f))
                     StatTile("Reading speed", if (o.pagesPerHour > 0) "%.0f".format(o.pagesPerHour) else "–", Modifier.weight(1f), "pages / hour")
                 }
             }
             item {
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                TileRow {
                     StatTile("Current streak", "${o.streak.current}d", Modifier.weight(1f), "Best ${o.streak.longest}d")
                     StatTile("Avg session", formatDuration(o.avgSessionSeconds), Modifier.weight(1f), "${o.sessions} sessions")
                 }

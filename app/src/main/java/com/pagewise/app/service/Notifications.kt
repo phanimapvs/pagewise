@@ -31,26 +31,29 @@ import java.util.concurrent.TimeUnit
 object Notifications {
     const val TIMER_CHANNEL = "timer"
     const val REMINDER_CHANNEL = "reminders"
+    const val BACKUP_CHANNEL = "backups"
     const val TIMER_ID = 1
     private const val REMINDER_ID = 2
     private const val TIME_UP_ID = 3
+    private const val BACKUP_ID = 4
 
     fun createChannels(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java)
         nm.createNotificationChannel(NotificationChannel(TIMER_CHANNEL, "Reading timer", NotificationManager.IMPORTANCE_LOW))
         nm.createNotificationChannel(NotificationChannel(REMINDER_CHANNEL, "Reminders", NotificationManager.IMPORTANCE_DEFAULT))
+        nm.createNotificationChannel(NotificationChannel(BACKUP_CHANNEL, "Backup problems", NotificationManager.IMPORTANCE_DEFAULT))
     }
 
     private fun canPost(context: Context) =
         ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED ||
             android.os.Build.VERSION.SDK_INT < 33
 
-    fun post(context: Context, id: Int, title: String, text: String) {
+    fun post(context: Context, id: Int, title: String, text: String, channel: String = REMINDER_CHANNEL) {
         if (!canPost(context)) return
         val open = PendingIntent.getActivity(
             context, id, Intent(context, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE,
         )
-        val n = NotificationCompat.Builder(context, REMINDER_CHANNEL)
+        val n = NotificationCompat.Builder(context, channel)
             .setSmallIcon(R.drawable.ic_stat_book)
             .setContentTitle(title)
             .setContentText(text)
@@ -64,6 +67,8 @@ object Notifications {
 
     fun alertTimeUp(context: Context, title: String) =
         post(context, TIME_UP_ID, "Time's up!", "Your reading session for \"$title\" is done. Tap to save it.")
+
+    fun backupFailed(context: Context, text: String) = post(context, BACKUP_ID, "Backup problem", text, BACKUP_CHANNEL)
 
     fun postReminder(context: Context, text: String) = post(context, REMINDER_ID, "Time to read 📖", text)
 }

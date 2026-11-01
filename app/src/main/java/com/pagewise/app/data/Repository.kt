@@ -25,10 +25,18 @@ import com.pagewise.app.domain.Goals
 import com.pagewise.app.domain.Ink
 import com.pagewise.app.domain.Levels
 import com.pagewise.app.domain.Stats
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.serialization.Serializable
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import java.io.File
+import java.io.OutputStream
+import java.security.MessageDigest
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 /** Things worth celebrating in the UI right after they happen. */
 sealed interface AppEvent {
@@ -61,6 +69,11 @@ data class Backup(
     val prompts: List<ReadathonPrompt>,
     val achievements: List<EarnedAchievement>,
 )
+
+/** A backup read from disk, with its quote photos keyed by file name. */
+class ParsedBackup(val backup: Backup, val images: Map<String, ByteArray>)
+
+private const val ARCHIVE_JSON = "backup.json"
 
 class Repository(
     val db: AppDatabase,
@@ -307,37 +320,93 @@ class Repository(
     // region backup
     private val json = Json { ignoreUnknownKeys = true; prettyPrint = false }
 
-    suspend fun exportJson(): String {
+    suspend fun snapshot(): Backup {
         val d = db
-        return json.encodeToString(
-            Backup.serializer(),
-            Backup(
-                createdAt = System.currentTimeMillis(),
-                prefs = prefs.current(),
-                books = d.books().all(),
-                sessions = d.sessions().all(),
-                quotes = d.notes().quotesList(),
-                thoughts = d.notes().thoughtsList(),
-                words = d.notes().wordsList(),
-                shelves = d.shelves().all(),
-                shelfBooks = d.shelves().links(),
-                ratings = d.ratings().all(),
-                goals = d.goals().all(),
-                readathons = d.readathons().all(),
-                prompts = d.readathons().allPrompts(),
-                achievements = d.achievements().all(),
-            ),
+        return Backup(
+            version = 2,
+            createdAt = System.currentTimeMillis(),
+            prefs = prefs.current(),
+            books = d.books().all(),
+            sessions = d.sessions().all(),
+            quotes = d.notes().quotesList(),
+            thoughts = d.notes().thoughtsList(),
+            words = d.notes().wordsList(),
+            shelves = d.shelves().all(),
+            shelfBooks = d.shelves().links(),
+            ratings = d.ratings().all(),
+            goals = d.goals().all(),
+            readathons = d.readathons().all(),
+            prompts = d.readathons().allPrompts(),
+            achievements = d.achievements().all(),
         )
     }
 
-    /** Replaces all local data with the backup's contents. */
-    suspend fun importJson(text: String) {
-        val b = json.decodeFromString(Backup.serializer(), text)
+    /** SHA-256 of the data in [b], ignoring when it was taken, so unchanged data gives the same value. */
+    fun fingerprint(b: Backup): String {
+        val stable = b.copy(createdAt = 0, prefs = b.prefs.copy(lastBackupAt = 0))
+        val md = MessageDigest.getInstance("SHA-256")
+        md.update(json.encodeToString(Backup.serializer(), stable).toByteArray())
+        b.quotes.mapNotNull { it.imagePath }.sorted().forEach { path ->
+            val f = File(path)
+            md.update("${f.name}:${f.length()}".toByteArray())
+        }
+        return md.digest().joinToString("") { "%02x".format(it) }
+    }
+
+    /**
+     * Writes [b] as a zip: `backup.json` plus every quote photo under `images/`.
+     * Photos that no longer exist on disk are skipped.
+     */
+    fun writeArchive(b: Backup, out: OutputStream) {
+        ZipOutputStream(out.buffered()).use { zip ->
+            zip.putNextEntry(ZipEntry(ARCHIVE_JSON))
+            zip.write(json.encodeToString(Backup.serializer(), b).toByteArray())
+            zip.closeEntry()
+            b.quotes.mapNotNull { it.imagePath }.map(::File).filter { it.isFile }.distinctBy { it.name }.forEach { f ->
+                zip.putNextEntry(ZipEntry("images/${f.name}"))
+                f.inputStream().use { it.copyTo(zip) }
+                zip.closeEntry()
+            }
+        }
+    }
+
+    /** Parses a backup file: a v2 zip, or a v1 plain JSON file. Throws if it isn't a Pagewise backup. */
+    fun readArchive(bytes: ByteArray): ParsedBackup {
+        val isZip = bytes.size > 1 && bytes[0] == 'P'.code.toByte() && bytes[1] == 'K'.code.toByte()
+        if (!isZip) return ParsedBackup(json.decodeFromString(Backup.serializer(), bytes.decodeToString()), emptyMap())
+        var backup: Backup? = null
+        val images = mutableMapOf<String, ByteArray>()
+        ZipInputStream(bytes.inputStream()).use { zip ->
+            generateSequence { zip.nextEntry }.forEach { e ->
+                when {
+                    e.name == ARCHIVE_JSON -> backup = json.decodeFromString(Backup.serializer(), zip.readBytes().decodeToString())
+                    // Only plain file names, so an entry can't write outside the images folder.
+                    e.name.startsWith("images/") && !e.isDirectory -> {
+                        val name = e.name.removePrefix("images/")
+                        if (name.isNotEmpty() && '/' !in name && '\\' !in name && name != "..") images[name] = zip.readBytes()
+                    }
+                }
+            }
+        }
+        return ParsedBackup(backup ?: error("No $ARCHIVE_JSON in archive"), images)
+    }
+
+    /** Replaces all local data with the backup's contents, saving its photos into [imagesDir]. */
+    suspend fun restore(parsed: ParsedBackup, imagesDir: File) = withContext(Dispatchers.IO) {
+        val b = parsed.backup
+        imagesDir.mkdirs()
+        parsed.images.forEach { (name, data) -> File(imagesDir, name).writeBytes(data) }
+        // Photo paths in the backup point at the old phone; re-point them at the restored files.
+        val quotes = b.quotes.map { q ->
+            val name = q.imagePath?.let { File(it).name }
+            q.copy(imagePath = name?.let { File(imagesDir, it) }?.takeIf { it.isFile }?.absolutePath)
+        }
+        // clearAllTables() blocks, and Room refuses it on the main thread.
         db.clearAllTables()
         db.tx {
             b.books.forEach { db.books().upsert(it) }
             b.sessions.forEach { db.sessions().upsert(it) }
-            b.quotes.forEach { db.notes().upsertQuote(it) }
+            quotes.forEach { db.notes().upsertQuote(it) }
             b.thoughts.forEach { db.notes().upsertThought(it) }
             b.words.forEach { db.notes().upsertWord(it) }
             b.shelves.forEach { db.shelves().upsert(it) }

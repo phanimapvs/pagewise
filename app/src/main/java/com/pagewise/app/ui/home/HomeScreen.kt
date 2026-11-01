@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -62,6 +63,7 @@ import com.pagewise.app.ui.components.LocalRepo
 import com.pagewise.app.ui.components.Outfit
 import com.pagewise.app.ui.components.Pip
 import com.pagewise.app.ui.components.ProgressRing
+import com.pagewise.app.ui.components.TileRow
 import com.pagewise.app.ui.timer.LogSessionDialog
 import com.pagewise.app.ui.timer.StartSessionDialog
 import java.time.LocalTime
@@ -101,6 +103,7 @@ fun HomeScreen(nav: NavController, prefs: UserPrefs) {
             item {
                 Card(
                     onClick = { nav.navigate(if (t.stopRequested) Routes.END else Routes.TIMER) },
+                    modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 ) {
                     Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -131,7 +134,8 @@ fun HomeScreen(nav: NavController, prefs: UserPrefs) {
             } else {
                 val pager = rememberPagerState { reading.size }
                 Column {
-                    HorizontalPager(pager, contentPadding = PaddingValues(end = 32.dp), pageSpacing = 12.dp) { page ->
+                    // With several books, the next one peeks in from the right; a lone book spans the full width.
+                    HorizontalPager(pager, contentPadding = PaddingValues(end = if (reading.size > 1) 32.dp else 0.dp), pageSpacing = 12.dp) { page ->
                         val book = reading[page]
                         CurrentBookCard(
                             book = book,
@@ -155,9 +159,9 @@ fun HomeScreen(nav: NavController, prefs: UserPrefs) {
         }
 
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Card(modifier = Modifier.weight(1f), onClick = { nav.switchTab(Routes.GOALS) }) {
-                    Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            TileRow {
+                Card(modifier = Modifier.weight(1f).fillMaxHeight(), onClick = { nav.switchTab(Routes.GOALS) }) {
+                    Row(Modifier.fillMaxHeight().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                         ProgressRing(daily?.fraction ?: 0f, Modifier.size(52.dp), stroke = 6.dp) {
                             Text(daily?.let { "${(it.fraction * 100).toInt()}%" } ?: "–", style = MaterialTheme.typography.labelMedium)
                         }
@@ -171,7 +175,7 @@ fun HomeScreen(nav: NavController, prefs: UserPrefs) {
                         }
                     }
                 }
-                Card(modifier = Modifier.weight(1f), onClick = { nav.switchTab(Routes.STATS) }) {
+                Card(modifier = Modifier.weight(1f).fillMaxHeight(), onClick = { nav.switchTab(Routes.STATS) }) {
                     Column(Modifier.padding(14.dp)) {
                         Text("This week", style = MaterialTheme.typography.titleSmall)
                         val week = Stats.dailyMinutes(sessions, 7)
@@ -186,6 +190,7 @@ fun HomeScreen(nav: NavController, prefs: UserPrefs) {
             item {
                 Card(
                     onClick = { s.bookId?.let { nav.navigate(Routes.book(it)) } ?: nav.navigate(Routes.ASSISTANT) },
+                    modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
                 ) {
                     Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -218,7 +223,7 @@ fun HomeScreen(nav: NavController, prefs: UserPrefs) {
 
 @Composable
 private fun CurrentBookCard(book: Book, remaining: Long?, onOpen: () -> Unit, onStart: () -> Unit, onLog: () -> Unit, timerBusy: Boolean) {
-    Card(onClick = onOpen, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)) {
+    Card(onClick = onOpen, modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)) {
         Row(Modifier.padding(14.dp)) {
             BookCover(book, width = 92.dp)
             Spacer(Modifier.width(14.dp))

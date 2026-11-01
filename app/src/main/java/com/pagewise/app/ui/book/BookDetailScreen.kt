@@ -74,6 +74,7 @@ import com.pagewise.app.ui.components.LocalRepo
 import com.pagewise.app.ui.components.Pill
 import com.pagewise.app.ui.components.StarRating
 import com.pagewise.app.ui.components.StatTile
+import com.pagewise.app.ui.components.TileRow
 import com.pagewise.app.ui.components.TextInputDialog
 import com.pagewise.app.ui.library.statusLabels
 import com.pagewise.app.ui.stats.SessionRow
@@ -237,15 +238,15 @@ private fun Overview(b: Book, sessions: List<com.pagewise.app.data.db.ReadingSes
     val pph = Stats.pagesPerHour(sessions)
     val left = Stats.timeRemaining(b, sessions, all)
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        TileRow {
             StatTile("Time read", formatDuration(total), Modifier.weight(1f))
             StatTile("Sessions", sessions.size.toString(), Modifier.weight(1f))
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        TileRow {
             StatTile("Pages / hour", if (pph > 0) "%.0f".format(pph) else "–", Modifier.weight(1f))
             StatTile("Time left", left?.let { formatDuration(it) } ?: "–", Modifier.weight(1f))
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        TileRow {
             StatTile("Avg session", if (sessions.isEmpty()) "–" else formatDuration(total / sessions.size), Modifier.weight(1f))
             StatTile("Days read", Stats.readingDays(sessions).size.toString(), Modifier.weight(1f))
         }

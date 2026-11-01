@@ -53,6 +53,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -79,7 +80,7 @@ fun MoreScreen(nav: NavController, prefs: UserPrefs) {
     Scaffold(topBar = { TopAppBar(title = { Text("More") }) }) { pad ->
         LazyColumn(Modifier.padding(pad), contentPadding = PaddingValues(16.dp, 0.dp, 16.dp, 16.dp)) {
             item {
-                Card(onClick = { nav.navigate(Routes.STORE) }, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+                Card(onClick = { nav.navigate(Routes.STORE) }, modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                         Pip(Outfit.of(prefs.activeOutfit), 64.dp)
                         Spacer(Modifier.width(12.dp))
@@ -138,9 +139,11 @@ fun AchievementsScreen(nav: NavController) {
                 ) {
                     Column(Modifier.padding(12.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(if (got != null) Icons.Filled.EmojiEvents else Icons.Filled.Lock, null, tint = if (got != null) tint else MaterialTheme.colorScheme.outline, modifier = Modifier.size(40.dp))
-                        Text(a.title, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
-                        Text(a.description, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
+                        Text(a.title, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        // Two lines reserved and a bar on every card, so the grid's cards all match.
+                        Text(a.description, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center, minLines = 2, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         if (got != null) {
+                            LinearBar(1f, Modifier.padding(top = 6.dp))
                             Text("Earned ${java.time.Instant.ofEpochMilli(got).atZone(java.time.ZoneId.systemDefault()).format(fmt)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                         } else {
                             LinearBar(v.toFloat() / t, Modifier.padding(top = 6.dp))

@@ -54,6 +54,7 @@ import com.pagewise.app.ui.components.Outfit
 import com.pagewise.app.ui.components.Pip
 import com.pagewise.app.ui.components.SectionHeader
 import com.pagewise.app.ui.components.StatTile
+import com.pagewise.app.ui.components.TileRow
 import java.time.format.DateTimeFormatter
 
 private fun SuggestionKind.icon(): ImageVector = when (this) {
@@ -92,6 +93,7 @@ fun AssistantScreen(nav: NavController, prefs: UserPrefs) {
             items(suggestions) { s ->
                 Card(
                     onClick = { s.bookId?.let { nav.navigate(Routes.book(it)) } },
+                    modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
                 ) {
                     Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -147,17 +149,17 @@ private fun change(pct: Int?) = when {
 @Composable
 private fun ReportBody(r: PeriodReport, openBook: (Long) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        TileRow {
             StatTile("Time read", formatDuration(r.seconds), Modifier.weight(1f), change(r.secondsChange))
             StatTile("Pages", r.pages.toString(), Modifier.weight(1f), change(r.pagesChange))
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        TileRow {
             StatTile("Days read", r.daysRead.toString(), Modifier.weight(1f), "${r.sessions} sessions")
             StatTile("Speed", if (r.pagesPerHour > 0) "%.0f".format(r.pagesPerHour) else "–", Modifier.weight(1f), "pages / hour")
         }
         Text(verdict(r), style = MaterialTheme.typography.bodyLarge)
         r.topBook?.let { b ->
-            Card(onClick = { openBook(b.id) }) {
+            Card(onClick = { openBook(b.id) }, modifier = Modifier.fillMaxWidth()) {
                 Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                     BookCover(b, width = 44.dp)
                     Spacer(Modifier.width(12.dp))

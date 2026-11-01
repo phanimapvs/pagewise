@@ -293,7 +293,7 @@ fun ReadathonDetailScreen(nav: NavController, id: Long) {
             if (r.description.isNotBlank()) item { Text(r.description, style = MaterialTheme.typography.bodyMedium) }
             if (state != ReadathonState.UPCOMING) {
                 item {
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    com.pagewise.app.ui.components.TileRow {
                         com.pagewise.app.ui.components.StatTile("Time", formatDuration(inRange.sumOf { it.durationSec }), Modifier.weight(1f))
                         com.pagewise.app.ui.components.StatTile("Pages", inRange.sumOf { it.pagesRead }.toString(), Modifier.weight(1f))
                         com.pagewise.app.ui.components.StatTile("Books", Stats.finishedBetween(books, from, to).size.toString(), Modifier.weight(1f))

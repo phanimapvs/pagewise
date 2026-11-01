@@ -40,6 +40,24 @@ data class UserPrefs(
     val flags: Set<String> = emptySet(),
 )
 
+enum class BackupFrequency(val label: String, val days: Long) { DAILY("Daily", 1), WEEKLY("Weekly", 7) }
+
+/**
+ * Automatic backup settings and status. Kept out of [UserPrefs] so they are never written
+ * into a backup: they are tied to this device (folder permissions, last run).
+ */
+data class BackupSettings(
+    val enabled: Boolean = false,
+    val frequency: BackupFrequency = BackupFrequency.DAILY,
+    val chargingOnly: Boolean = false,
+    /** Optional SAF tree that also receives a copy of every automatic backup. */
+    val folderUri: String? = null,
+    val lastRunAt: Long = 0,
+    val lastError: String? = null,
+    /** Fingerprint of the data in the last automatic backup, to skip runs when nothing changed. */
+    val lastHash: String? = null,
+)
+
 class Prefs(private val context: Context) {
     private object K {
         val name = stringPreferencesKey("name")
@@ -56,11 +74,47 @@ class Prefs(private val context: Context) {
         val sound = stringPreferencesKey("default_sound")
         val lastBackup = stringPreferencesKey("last_backup")
         val flags = stringSetPreferencesKey("flags")
+        val autoBackup = booleanPreferencesKey("auto_backup")
+        val backupFrequency = stringPreferencesKey("backup_frequency")
+        val backupCharging = booleanPreferencesKey("backup_charging")
+        val backupFolder = stringPreferencesKey("backup_folder")
+        val backupLastRun = stringPreferencesKey("backup_last_run")
+        val backupError = stringPreferencesKey("backup_error")
+        val backupHash = stringPreferencesKey("backup_hash")
     }
 
     val flow: Flow<UserPrefs> = context.dataStore.data.map { it.toUserPrefs() }
 
     suspend fun current(): UserPrefs = flow.first()
+
+    val backupFlow: Flow<BackupSettings> = context.dataStore.data.map {
+        BackupSettings(
+            enabled = it[K.autoBackup] ?: false,
+            frequency = it[K.backupFrequency]?.let { f -> runCatching { BackupFrequency.valueOf(f) }.getOrNull() } ?: BackupFrequency.DAILY,
+            chargingOnly = it[K.backupCharging] ?: false,
+            folderUri = it[K.backupFolder],
+            lastRunAt = it[K.backupLastRun]?.toLongOrNull() ?: 0,
+            lastError = it[K.backupError],
+            lastHash = it[K.backupHash],
+        )
+    }
+
+    suspend fun backupSettings(): BackupSettings = backupFlow.first()
+
+    suspend fun setBackupSchedule(enabled: Boolean, frequency: BackupFrequency, chargingOnly: Boolean) = context.dataStore.edit {
+        it[K.autoBackup] = enabled
+        it[K.backupFrequency] = frequency.name
+        it[K.backupCharging] = chargingOnly
+    }
+    suspend fun setBackupFolder(uri: String?) = context.dataStore.edit {
+        if (uri == null) it.remove(K.backupFolder) else it[K.backupFolder] = uri
+    }
+    /** Records an automatic backup run; [hash] is null when the run failed before writing. */
+    suspend fun setBackupResult(at: Long, error: String?, hash: String?) = context.dataStore.edit {
+        it[K.backupLastRun] = at.toString()
+        if (error == null) it.remove(K.backupError) else it[K.backupError] = error
+        if (hash != null) it[K.backupHash] = hash
+    }
 
     private fun Preferences.toUserPrefs() = UserPrefs(
         name = this[K.name] ?: "",
