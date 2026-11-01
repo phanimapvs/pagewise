@@ -25,19 +25,12 @@
 <p align="center">
   <img src="assets/screenshots/01_home.png" width="30%" alt="Home — greeting, streak and current book">
   &nbsp;
-  <img src="assets/screenshots/02_library.png" width="30%" alt="Library with status filters">
-  &nbsp;
   <img src="assets/screenshots/06_book.png" width="30%" alt="Book detail with per-book stats">
-</p>
-<p align="center">
-  <img src="assets/screenshots/04_stats.png" width="30%" alt="Stats — level, totals and progress chart">
   &nbsp;
   <img src="assets/screenshots/03_goals.png" width="30%" alt="Goals — daily, monthly and yearly targets">
-  &nbsp;
-  <img src="assets/screenshots/05_more.png" width="30%" alt="More — achievements, readathons, shop, settings">
 </p>
 <p align="center">
-  <sub>🏠 Home&nbsp;·&nbsp;📚 Library&nbsp;·&nbsp;📖 Book detail&nbsp;&nbsp;|&nbsp;&nbsp;📊 Stats&nbsp;·&nbsp;🎯 Goals&nbsp;·&nbsp;⋯ More</sub>
+  <sub>🏠 Home&nbsp;·&nbsp;📖 Book detail&nbsp;·&nbsp;🎯 Goals</sub>
 </p>
 
 ---
