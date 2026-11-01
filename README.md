@@ -27,10 +27,10 @@
   &nbsp;
   <img src="assets/screenshots/06_book.png" width="30%" alt="Book detail with per-book stats">
   &nbsp;
-  <img src="assets/screenshots/03_goals.png" width="30%" alt="Goals — daily, monthly and yearly targets">
+  <img src="assets/screenshots/07_settings.png" width="30%" alt="Settings — theme modes, color themes and reading fonts">
 </p>
 <p align="center">
-  <sub>🏠 Home&nbsp;·&nbsp;📖 Book detail&nbsp;·&nbsp;🎯 Goals</sub>
+  <sub>🏠 Home&nbsp;·&nbsp;📖 Book detail&nbsp;·&nbsp;⚙️ Settings</sub>
 </p>
 
 ---
