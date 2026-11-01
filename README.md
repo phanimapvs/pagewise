@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.svg" alt="Pagewise — your reading, page by page" width="100%">
+  <img src="assets/banner.png?v=2" alt="Pagewise — your reading, page by page" width="100%">
 </p>
 
 <h1 align="center">📖 Pagewise</h1>
